@@ -10,6 +10,8 @@
 
 @interface DVChatViewController ()
 @property (nonatomic, strong) NSLayoutConstraint *constraintToolbarBottom;
+
+@property (nonatomic) CGRect defaultToolbarRect;
 @end
 
 @implementation DVChatViewController
@@ -103,9 +105,12 @@
     NSDictionary *userInfo = [notification userInfo];
     CGRect keyboardEndFrame = [userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
     if (CGRectIsNull(keyboardEndFrame)) return;
+    if (CGRectIsEmpty(self.defaultToolbarRect)) {
+        self.defaultToolbarRect = self.dv_textViewToolbar.frame;
+    }
     
     [self.constraintToolbarBottom setConstant:MAX(CONSTRAINT_TOOLBAR_BOTTOM_DEFAULT,
-                                                  CGRectGetMaxY(self.dv_textViewToolbar.frame) - CGRectGetMinY(keyboardEndFrame))];
+                                                  CGRectGetMaxY(self.defaultToolbarRect) - CGRectGetMinY(keyboardEndFrame))];
     
     [UIView animateWithDuration:[userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue]
                           delay:.0
